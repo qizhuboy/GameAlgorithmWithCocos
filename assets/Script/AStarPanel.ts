@@ -5,7 +5,7 @@ interface AStarPanelData {
     Index: number,
     Row: number,
     Column: number,
-    
+
     F: number, //总代价
     G: number, //当前点到起点的代价
     H: number //当前点到终点的代价
@@ -60,7 +60,7 @@ export default class AStarPanel extends cc.Component {
     }
 
     private OnStartButtonClick() {
-        if(AStarPanel.SetTimeOutIds.length > 0) {
+        if (AStarPanel.SetTimeOutIds.length > 0) {
             AStarPanel.SetTimeOutIds.forEach(id => {
                 clearTimeout(id);
             })
@@ -149,6 +149,10 @@ class AStar {
             // 找到curMinFNode附近符合条件的节点并放入roundNodes
             let roundNodeDatas: AStarPanelData[] = [];
             let indexs: number[] = [curMinFNode.Index - this._column, curMinFNode.Index + this._column, curMinFNode.Index - 1, curMinFNode.Index + 1];
+            let closeMap: { [key: number]: AStarPanelData } = <{ [key: number]: AStarPanelData }>{};
+            this._closeList.forEach(obj => {
+                closeMap[obj.Index] = obj;
+            })
             for (let i = 0; i < indexs.length; i++) {
                 switch (i) {
                     case 0: //上
@@ -174,10 +178,7 @@ class AStar {
                     default:
                         break;
                 }
-                let roundIndex = this._closeList.findIndex(ele => { //不是已经走过的路
-                    return ele.Index == indexs[i];
-                })
-                if (!this._datas[indexs[i]].IsObstacle && roundIndex == -1) {
+                if (!this._datas[indexs[i]].IsObstacle && !closeMap[indexs[i]]) {
                     roundNodeDatas.push(this._datas[indexs[i]]);
                 }
             }
