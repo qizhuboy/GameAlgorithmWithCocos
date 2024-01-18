@@ -9,23 +9,33 @@ export default class Helloworld extends cc.Component {
     @property(cc.Button)
     AStarButton: cc.Button = null;
 
+    @property(cc.Button)
+    ScratchCardButton: cc.Button = null;
+
     @property(cc.Node)
     PanelNode: cc.Node = null;
 
     protected onLoad(): void {
         this.QuadTreeButton.node.on("click", this.OnQuadTreeButtonClick, this);
         this.AStarButton.node.on("click", this.OnAStarButtonClick, this);
+        this.ScratchCardButton.node.on("click", this.OnScratchCardButtonClick, this);
     }
 
     private async OnQuadTreeButtonClick() {
-        let quadTreePrefab = await this.LoadPanel<cc.Prefab>("QuadTreePanel", cc.Prefab);
-        let node = cc.instantiate(quadTreePrefab);
-        node.parent = this.PanelNode;
+        this.LoadPanelToPanelNode("QuadTreePanel");
     }
 
     private async OnAStarButtonClick() {
-        let aStarPrefab = await this.LoadPanel<cc.Prefab>("AStarPanel", cc.Prefab);
-        let node = cc.instantiate(aStarPrefab);
+        this.LoadPanelToPanelNode("AStarPanel");
+    }
+
+    private async OnScratchCardButtonClick() {
+        this.LoadPanelToPanelNode("ScratchCardPanel");
+    }
+
+    private async LoadPanelToPanelNode(path: string) {
+        let prefab = await this.LoadPanel<cc.Prefab>(path, cc.Prefab);
+        let node = cc.instantiate(prefab);
         node.parent = this.PanelNode;
     }
 
