@@ -26,4 +26,19 @@
     </center>
 </div>  
 
+3. 酷跑小游戏  
+类似天天酷派小游戏，主要做了碰撞检测以及update帧逻辑计算 (暂未上传，感兴趣的朋友可以留言)
+<div style="text-align: center;">
+<iframe 
+    src="PNG/kupao.mp4" 
+    scrolling="no"
+    border="0" 
+    frameborder="no" 
+    framespacing="0" 
+    allowfullscreen="true" 
+    height=960 
+    width=432> 
+</iframe>
+</div>
+
 
