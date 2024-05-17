@@ -27,9 +27,15 @@
 </div>  
 
 3. 酷跑小游戏  
-类似天天酷派小游戏，主要做了碰撞检测以及update帧逻辑计算 (暂未上传，感兴趣的朋友可以留言)
-<div style="text-align:center">
-    <img src="PNG/kupao.gif" width="432" height="960" />
-</div>
+类似天天酷派小游戏，主要做了碰撞检测以及update帧逻辑计算 (暂未上传，感兴趣的朋友可以留言)  
+
+<div>			
+    <!--块级封装-->
+    <center><!--将图片和文字居中-->
+    <img src="PNG/kupao.gif">
+    <br><!--换行-->
+    酷跑小游戏效果 <!--标题-->
+    </center>
+</div>  
 
 
