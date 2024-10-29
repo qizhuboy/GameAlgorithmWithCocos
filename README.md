@@ -43,9 +43,7 @@
 <div>			
     <!--块级封装-->
     <center><!--将图片和文字居中-->
-    <video width="1280" height="576" controls>
-    <source src="PNG/apk_select_image.mp4" type="video/mp4">
-    </video>
+    <img src="PNG/apk_select_image.gif">
     <br><!--换行-->
     获取本地相册图片效果 <!--标题-->
     </center>
