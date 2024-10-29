@@ -38,4 +38,17 @@
     </center>
 </div>  
 
+4. apk获取手机相册
+主要涉及到原生android和coocs互相通信的内容，jsb，反射等。当前apk是基于android 13版本的，14及以上可能会出现不兼容的问题。安卓部分的代码在AppActivity.ts中
+<div>			
+    <!--块级封装-->
+    <center><!--将图片和文字居中-->
+    <video width="1280" height="576" controls>
+    <source src="PNG/apk_select_image.mp4" type="video/mp4">
+    </video>
+    <br><!--换行-->
+    获取本地相册图片效果 <!--标题-->
+    </center>
+</div> 
+
 
