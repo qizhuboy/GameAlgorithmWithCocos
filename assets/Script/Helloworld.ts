@@ -2,6 +2,12 @@ import { WebSocketServer } from "./WebSocket";
 
 const { ccclass, property } = cc._decorator;
 
+declare global {
+    interface Window {
+        Helloworld:any;
+    }
+}
+
 @ccclass
 export default class Helloworld extends cc.Component {
 
@@ -20,8 +26,19 @@ export default class Helloworld extends cc.Component {
     @property(cc.Button)
     WebSocketButton: cc.Button = null;
 
+    @property(cc.Button)
+    PhysicsButton: cc.Button = null;
+
+    @property(cc.Button)
+    OpenPhoneAlbum: cc.Button = null;
+
     @property(cc.Node)
     PanelNode: cc.Node = null;
+
+    @property(cc.Sprite)
+    HeadIcon: cc.Sprite = null;
+
+    public static OnImageShow: Function;
 
     protected onLoad(): void {
         this.QuadTreeButton.node.on("click", this.OnQuadTreeButtonClick, this);
@@ -29,8 +46,11 @@ export default class Helloworld extends cc.Component {
         this.ScratchCardButton.node.on("click", this.OnScratchCardButtonClick, this);
         this.HttpRequestButton.node.on("click", this.OnHttpRequestButtonClick, this);
         this.WebSocketButton.node.on("click", this.OnWebSocketButtonClick, this);
+        this.PhysicsButton.node.on("click", this.OnPhysicsButtonClick, this);
+        this.OpenPhoneAlbum.node.on("click", this.OnOpenPhoneAlbumClick, this);
         this.HttpRequestButton.node.active = false;
         this.WebSocketButton.node.active = false;
+        Helloworld.OnImageShow = this.ShowSelectImage.bind(this);
     }
 
     private async OnQuadTreeButtonClick() {
@@ -79,6 +99,39 @@ export default class Helloworld extends cc.Component {
         WebSocketServer.Instance.SendData(buffer);
     }
 
+    private OnPhysicsButtonClick() {
+        this.LoadPanelToPanelNode("PhysicsPanel");
+    }
+
+    private OnOpenPhoneAlbumClick() {
+        if (cc.sys.os === cc.sys.OS_ANDROID) {
+            console.log("开始调用安卓方法");
+            jsb.reflection.callStaticMethod(
+                "org.cocos2dx.javascript.AppActivity",
+                "chooseImage",
+                "()V"
+            );
+        }
+    }
+
+    public static onImageSelected(uri) {
+        console.log("选择图片uri:" + uri);
+        cc.loader.load({ url: uri}, (err, texture) => {
+            if (!err) {
+                console.log("图片加载成功");
+                let spriteFrame = new cc.SpriteFrame(texture);
+                Helloworld.OnImageShow(spriteFrame);
+            } else {
+                console.log("图片加载失败");
+            }
+        });
+    }
+
+    private ShowSelectImage(image: cc.SpriteFrame) {
+        console.log("设置图片成功");
+        this.HeadIcon.spriteFrame = image
+    }
+
     private async LoadPanelToPanelNode(path: string) {
         let prefab = await this.LoadPanel<cc.Prefab>(path, cc.Prefab);
         let node = cc.instantiate(prefab);
@@ -98,4 +151,6 @@ export default class Helloworld extends cc.Component {
     }
 
 }
+
+window.Helloworld = Helloworld;
 

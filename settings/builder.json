@@ -11,7 +11,7 @@
   "title": "hello_world",
   "webOrientation": "auto",
   "inlineSpriteFrames": true,
-  "inlineSpriteFrames_native": true,
+  "inlineSpriteFrames_native": false,
   "mainCompressionType": "default",
   "mainIsRemote": false,
   "optimizeHotUpdate": false,
@@ -22,7 +22,7 @@
   "zipCompressJs": true,
   "fb-instant-games": {},
   "android": {
-    "packageName": "org.cocos2d.demo",
+    "packageName": "com.mycompany.myproduct",
     "REMOTE_SERVER_ROOT": ""
   },
   "ios": {

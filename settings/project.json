@@ -1,12 +1,23 @@
 {
   "collision-matrix": [
     [
+      false
+    ],
+    [
+      false,
       true
     ]
   ],
-  "excluded-modules": [],
+  "excluded-modules": [
+    "3D",
+    "3D Primitive",
+    "3D Physics/cannon.js",
+    "3D Physics/Builtin",
+    "3D Particle"
+  ],
   "group-list": [
-    "default"
+    "default",
+    "actor"
   ],
   "start-scene": "2d2f792f-a40c-49bb-a189-ed176a246e49",
   "design-resolution-width": 1960,
@@ -20,7 +31,7 @@
     "width": 960,
     "height": 640
   },
-  "last-module-event-record-time": 1713513424738,
+  "last-module-event-record-time": 1730169429293,
   "assets-sort-type": "name",
   "facebook": {
     "enable": false,
