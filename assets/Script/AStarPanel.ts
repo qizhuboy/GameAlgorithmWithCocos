@@ -1,3 +1,5 @@
+import BaseUIPanel, { PanelType } from "./BaseUIPanel";
+
 const { ccclass, property } = cc._decorator;
 
 interface AStarPanelData {
@@ -14,7 +16,7 @@ interface AStarPanelData {
 }
 
 @ccclass
-export default class AStarPanel extends cc.Component {
+export default class AStarPanel extends BaseUIPanel {
 
     @property(cc.Node)
     ParentNode: cc.Node = null;
@@ -33,6 +35,10 @@ export default class AStarPanel extends cc.Component {
     private _limitDatas: AStarPanelData[] = []; //阻挡节点数据
     private _aStarInstance: AStar;
     public static SetTimeOutIds: number[] = [];
+
+    public SetPanelType() {
+        this.panelType = PanelType.Fix;
+    }
 
     protected start(): void {
         this._datas = [];
@@ -92,7 +98,7 @@ export default class AStarPanel extends cc.Component {
     }
 
     private OnCloseButtonClick() {
-        this.node.destroy();
+        super.Destroy();
     }
 
 }

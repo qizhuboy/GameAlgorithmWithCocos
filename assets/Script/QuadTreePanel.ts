@@ -1,7 +1,9 @@
+import BaseUIPanel, { PanelType } from "./BaseUIPanel";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class QuadTreePanel extends cc.Component {
+export default class QuadTreePanel extends BaseUIPanel {
 
     @property(cc.Node)
     Parent: cc.Node = null;
@@ -21,19 +23,27 @@ export default class QuadTreePanel extends cc.Component {
     private _qt: QuatTree; //四叉树
     private _found: cc.Node[] = []; //找到的圆圈节点
 
-    start() {
+    public SetPanelType() {
+        this.panelType = PanelType.Fix;
+    }
+
+    onLoad() {
         this._maxWidth = 1960;
         this._maxHeight = 1080;
         let boundary: Rectangle = new Rectangle(0, 0, this._maxWidth / 2, this._maxHeight / 2);
         this._qt = new QuatTree(boundary, 4);
-        this.RandomGenCircle();
-        this.CreateRect();
-        this.FoundCount.string = `检测圆圈数量：${0}`;
         this.CloseButton.node.on("click", this.OnCloseButtonClick, this);
     }
 
+    public Display(Params: any[]): void {
+        super.Display(Params);
+        this.RandomGenCircle();
+        this.CreateRect();
+        this.FoundCount.string = `检测圆圈数量：${0}`;
+    }
+
     private OnCloseButtonClick() {
-        this.node.destroy();
+        super.Destroy();
     }
 
     /**创建随机圆圈 */
@@ -177,8 +187,7 @@ class QuatTree {
         if (!this._boundary.CheckIsContainer(circleNode)) {
             return;
         }
-        if (this._circles.length < this._capacity) 
-        {
+        if (this._circles.length < this._capacity) {
             this._circles.push(circleNode);
         } else {
             if (!this._divided) {

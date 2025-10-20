@@ -1,3 +1,4 @@
+import UIManager from "./UIManager";
 import { WebSocketServer } from "./WebSocket";
 
 const { ccclass, property } = cc._decorator;
@@ -33,7 +34,10 @@ export default class Helloworld extends cc.Component {
     OpenPhoneAlbum: cc.Button = null;
 
     @property(cc.Node)
-    PanelNode: cc.Node = null;
+    FixNode: cc.Node = null;
+
+    @property(cc.Node)
+    PopUpNode: cc.Node = null;
 
     @property(cc.Sprite)
     HeadIcon: cc.Sprite = null;
@@ -54,15 +58,15 @@ export default class Helloworld extends cc.Component {
     }
 
     private async OnQuadTreeButtonClick() {
-        this.LoadPanelToPanelNode("QuadTreePanel");
+        UIManager.Instance.ShowUIPanel("QuadTreePanel");
     }
 
     private async OnAStarButtonClick() {
-        this.LoadPanelToPanelNode("AStarPanel");
+        UIManager.Instance.ShowUIPanel("AStarPanel");
     }
 
     private async OnScratchCardButtonClick() {
-        this.LoadPanelToPanelNode("ScratchCardPanel");
+        UIManager.Instance.ShowUIPanel("ScratchCardPanel", "testParam");
     }
 
     private OnHttpRequestButtonClick() {
@@ -100,7 +104,7 @@ export default class Helloworld extends cc.Component {
     }
 
     private OnPhysicsButtonClick() {
-        this.LoadPanelToPanelNode("PhysicsPanel");
+        UIManager.Instance.ShowUIPanel("PhysicsPanel");
     }
 
     private OnOpenPhoneAlbumClick() {
@@ -130,24 +134,6 @@ export default class Helloworld extends cc.Component {
     private ShowSelectImage(image: cc.SpriteFrame) {
         console.log("设置图片成功");
         this.HeadIcon.spriteFrame = image
-    }
-
-    private async LoadPanelToPanelNode(path: string) {
-        let prefab = await this.LoadPanel<cc.Prefab>(path, cc.Prefab);
-        let node = cc.instantiate(prefab);
-        node.parent = this.PanelNode;
-    }
-
-    private async LoadPanel<T extends cc.Asset>(path: string, type: typeof cc.Asset): Promise<T> {
-        return new Promise((resolve, reject) => {
-            cc.assetManager.resources.load<T>(path, type, (error: Error, assets: cc.Asset) => {
-                if (error) {
-                    console.error(`${path} is not exist`);
-                } else {
-                    resolve(assets as T);
-                }
-            })
-        })
     }
 
 }

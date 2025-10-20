@@ -1,7 +1,9 @@
+import BaseUIPanel, { PanelType } from "./BaseUIPanel";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class ScratchCardPanel extends cc.Component {
+export default class ScratchCardPanel extends BaseUIPanel {
 
     @property(cc.Node)
     ShowNode: cc.Node = null;
@@ -23,7 +25,12 @@ export default class ScratchCardPanel extends cc.Component {
     private _lastPoint: cc.Vec2;
     private _openArena: boolean[] = [];
 
+    public SetPanelType() {
+        this.panelType = PanelType.Fix;
+    }
+
     onLoad() {
+        super.onLoad();
         this.node.on(cc.Node.EventType.TOUCH_START, this.OnTouchBegin, this);
         this.node.on(cc.Node.EventType.TOUCH_MOVE, this.OnTouchMoved, this);
         this.node.on(cc.Node.EventType.TOUCH_END, this.OnTouchEnd, this);
@@ -117,7 +124,7 @@ export default class ScratchCardPanel extends cc.Component {
     }
 
     private OnCloseButtonClick() {
-        this.node.destroy();
+        super.Destroy();
     }
 
     private OnStartButtonClick() {
