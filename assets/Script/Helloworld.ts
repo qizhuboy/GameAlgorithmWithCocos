@@ -9,6 +9,8 @@ declare global {
     }
 }
 
+export const wx = window['wx'];
+
 @ccclass
 export default class Helloworld extends cc.Component {
 
@@ -108,14 +110,127 @@ export default class Helloworld extends cc.Component {
     }
 
     private OnOpenPhoneAlbumClick() {
-        if (cc.sys.os === cc.sys.OS_ANDROID) {
-            console.log("开始调用安卓方法");
-            jsb.reflection.callStaticMethod(
-                "org.cocos2dx.javascript.AppActivity",
-                "chooseImage",
-                "()V"
-            );
+        // if (cc.sys.os === cc.sys.OS_ANDROID) {
+        //     console.log("开始调用安卓方法");
+        //     jsb.reflection.callStaticMethod(
+        //         "org.cocos2dx.javascript.AppActivity",
+        //         "chooseImage",
+        //         "()V"
+        //     );
+        // }
+        this.wechatLogin();
+    }
+
+    // 微信登录
+    wechatLogin() {
+        wx.login({
+            success: (res) => {
+                if (res.code) {
+                    cc.log('登录成功，code:', res.code);
+                    // 这里应该将code发送到开发者服务器
+                    // 服务器用code换取openid和session_key
+                    this.getUserInfo();
+                } else {
+                    cc.error('登录失败:' + res.errMsg);
+                }
+            },
+            fail: (err) => {
+                cc.error('微信登录接口调用失败:', err);
+            }
+        });
+    }
+
+    // 获取用户信息
+    getUserInfo() {
+        // 先检查是否已授权
+        wx.getSetting({
+            success: (res) => {
+                if (res.authSetting['scope.userInfo']) {
+                    // 已经授权，可以直接获取用户信息
+                    this.fetchUserInfo();
+                } else {
+                    // 未授权，创建授权按钮
+                    this.createUserInfoButton();
+                }
+            }
+        });
+    }
+
+    // 创建授权按钮
+    createUserInfoButton() {
+        let systemInfo = wx.getSystemInfoSync();
+        let button = wx.createUserInfoButton({
+            type: 'text',
+            text: '获取用户信息',
+            style: {
+                left: (systemInfo.windowWidth - 200) / 2,
+                top: systemInfo.windowHeight / 2,
+                width: 200,
+                height: 40,
+                lineHeight: 40,
+                backgroundColor: '#07c160',
+                color: '#ffffff',
+                textAlign: 'center',
+                fontSize: 16,
+                borderRadius: 4
+            }
+        });
+        
+        button.onTap((res) => {
+            if (res.errMsg === 'getUserInfo:ok') {
+                cc.log('用户信息获取成功');
+                // 用户信息获取成功，销毁按钮
+                button.destroy();
+                // 处理用户信息
+                this.processUserInfo(res.userInfo);
+            } else {
+                cc.error('用户拒绝授权:', res.errMsg);
+            }
+        });
+    }
+
+    // 直接获取用户信息（已授权情况）
+    fetchUserInfo() {
+        wx.getUserInfo({
+            openIdList: ['selfOpenId'],
+            lang: 'zh_CN',
+            success: (res) => {
+                cc.log('直接获取用户信息成功:', res);
+                this.processUserInfo(res.userInfo);
+            },
+            fail: (err) => {
+                cc.error('获取用户信息失败:', err);
+            }
+        });
+    }
+
+    // 处理用户信息
+    processUserInfo(userInfo) {
+        // 更新UI显示
+        this.updateUserInfoUI(userInfo);
+    }
+
+    // 更新用户信息UI
+    updateUserInfoUI(userInfo) {
+
+        // 加载并显示头像
+        if (userInfo.avatarUrl) {
+            this.loadRemoteImage(userInfo.avatarUrl, (texture) => {
+                let spriteFrame = new cc.SpriteFrame(texture);
+                this.HeadIcon.spriteFrame = spriteFrame;
+            });
         }
+    }
+
+    // 加载远程图片
+    loadRemoteImage(url, callback) {
+        cc.assetManager.loadRemote(url, (err, texture) => {
+            if (err) {
+                cc.error('加载头像失败:', err);
+                return;
+            }
+            callback(texture);
+        });
     }
 
     public static onImageSelected(uri) {

@@ -1,9 +1,6 @@
 import BaseUIPanel, { PanelType } from "./BaseUIPanel";
 
-const { ccclass, property } = cc._decorator;
-
-@ccclass
-export default class UIManager extends cc.Component{
+export default class UIManager {
 
     private static _instance: UIManager = null;
     private showPanels: BaseUIPanel[] = [];
@@ -17,7 +14,7 @@ export default class UIManager extends cc.Component{
         return this._instance;
     }
 
-    public async ShowUIPanel(panelName: string, ...Params: any[]) { 
+    public async ShowUIPanel(panelName: string, ...Params: any[]) {
         let prefab = await this.LoadPanel<cc.Prefab>(panelName, cc.Prefab);
         let node = cc.instantiate(prefab);
         let baseIUPanel = node.getComponent(BaseUIPanel);
