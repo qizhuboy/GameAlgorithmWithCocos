@@ -5,7 +5,7 @@ const { ccclass, property } = cc._decorator;
 
 declare global {
     interface Window {
-        Helloworld:any;
+        Helloworld: any;
     }
 }
 
@@ -91,7 +91,7 @@ export default class Helloworld extends cc.Component {
 
     private OnWebSocketButtonClick() {
         WebSocketServer.Instance.Init('ws://10.1.1.49:30001');
-        let data = { 
+        let data = {
             name: "Hello World"
         };
         const jsonString = JSON.stringify(data);
@@ -175,7 +175,7 @@ export default class Helloworld extends cc.Component {
                 borderRadius: 4
             }
         });
-        
+
         button.onTap((res) => {
             if (res.errMsg === 'getUserInfo:ok') {
                 cc.log('用户信息获取成功');
@@ -215,27 +215,57 @@ export default class Helloworld extends cc.Component {
 
         // 加载并显示头像
         if (userInfo.avatarUrl) {
-            this.loadRemoteImage(userInfo.avatarUrl, (texture) => {
-                let spriteFrame = new cc.SpriteFrame(texture);
-                this.HeadIcon.spriteFrame = spriteFrame;
-            });
+            this.loadAvatar(userInfo.avatarUrl);
         }
     }
 
-    // 加载远程图片
-    loadRemoteImage(url, callback) {
-        cc.assetManager.loadRemote(url, (err, texture) => {
-            if (err) {
-                cc.error('加载头像失败:', err);
-                return;
-            }
-            callback(texture);
+    async loadWechatAvatarWithDownload(avatarUrl): Promise<any> {
+        return new Promise((resolve, reject) => {
+            // 先通过微信下载API下载图片
+            wx.downloadFile({
+                url: avatarUrl,
+                success: (res) => {
+                    if (res.statusCode === 200) {
+                        console.log('下载成功，临时路径:', res.tempFilePath);
+
+                        // 使用临时文件路径加载
+                        cc.assetManager.loadRemote(res.tempFilePath, (err, texture) => {
+                            if (err) {
+                                console.error('加载纹理失败:', err);
+                                reject(err);
+                                return;
+                            }
+                            console.log('加载纹理成功');
+                            resolve(texture);
+                        });
+                    } else {
+                        reject(new Error(`下载失败，状态码: ${res.statusCode}`));
+                    }
+                },
+                fail: (err) => {
+                    console.error('下载文件失败:', err);
+                    reject(err);
+                }
+            });
         });
+    }
+
+    // 使用示例
+    async loadAvatar(url: string) {
+        try {
+            let texture = await this.loadWechatAvatarWithDownload(url);
+            // 创建SpriteFrame
+            const spriteFrame = new cc.SpriteFrame(texture);
+            this.HeadIcon.spriteFrame = spriteFrame;
+
+        } catch (error) {
+            console.error('加载头像失败:', error);
+        }
     }
 
     public static onImageSelected(uri) {
         console.log("选择图片uri:" + uri);
-        cc.loader.load({ url: uri}, (err, texture) => {
+        cc.loader.load({ url: uri }, (err, texture) => {
             if (!err) {
                 console.log("图片加载成功");
                 let spriteFrame = new cc.SpriteFrame(texture);
